@@ -1,6 +1,9 @@
 body {
-    background-image: url("background.jpg");
-    background-color: #cccccc;
+    background-image: url("ocean.jpg");
+    background-position: center;
+    background-size: 1500px;
+
+    background-color: #ffffff;
     font-family: 'Droid Serif', sans-serif;
 }
 
@@ -16,8 +19,8 @@ body {
 
 .container{
 	margin-top: 15px;
-	background-color: #C2A385;
-	opacity:0.9;
+	background-color: #75ffff;
+	opacity:0.8;
 	border-radius: 8px;
 	width: 1200px;
 }
