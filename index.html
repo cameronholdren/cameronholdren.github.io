@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="Whale Clicker">
+    <meta name="author" content="Cameron Holdren">
+
+	<meta name="theme-color" content="#ffffff">
+
+    <title>Whale Clicker</title>
+
+    <!-- Bootstrap core CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link href='http://fonts.googleapis.com/css?family=Droid+Serif' rel='stylesheet'  type='text/css'>
+    <link rel="stylesheet" href="clicker.css">
+	<script src="clicker.js"></script>
+
+ </head>
+
+  <body>
+    <div class="container">
+
+      <div class="page-header">
+        <h1>Whale Clicker</h1>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4" id="left_col">
+            <table class="table table-bordered" id="makerTable">
+            </table>
+		</div>
+        <div class="col-md-4" id="mid_col">
+        	<h2><span id="items">0</span> whale<span id="plural">s</span></h2>
+            <p>Saving <span id="make_per_second">0</span>/second</p>
+
+        	<img onclick="itemMake(1)" src="bottle.png" id="bottle" width="100" onmousedown="this.width=98" onmouseup="this.width=100">
+
+            <h2>$<span id="money">0</span></h2>
+
+		</div>
+        <div class="col-md-4" id="right_col">
+            <table class="table" id="sellerTable">
+            </table>
+        </div>
+      </div>
+
+		<div id="footer">
+            All time: <span id="all_items">0</span>, $<span id="all_money">0</span><br>
+            <button onclick="saveGame()">Save</button>
+            <button onclick="saveGame(true)">Clear</button>
+        </div>
+
+	</body>
+	<script>
+	loadDisplay();
+</script>
+</html>

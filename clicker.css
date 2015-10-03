@@ -1,0 +1,80 @@
+body {
+    background-image: url("background.jpg");
+    background-color: #cccccc;
+    font-family: 'Droid Serif', sans-serif;
+}
+
+#mid_col{
+	text-align:center;
+	height: 400px;
+}
+.row{
+	border: 3px solid white;
+	margin: 10px;
+	text-align:center;
+}
+
+.container{
+	margin-top: 15px;
+	background-color: #C2A385;
+	opacity:0.9;
+	border-radius: 8px;
+	width: 1200px;
+}
+
+#footer{
+	padding: 10px;
+		text-align:center;
+}
+
+#sellerTable {
+	border: 0px;
+}
+
+#sellerTable td:nth-child(1) {
+	width: 80px;
+}
+
+#makerTable tr:nth-child(1) td:nth-child(2) {
+	background-image: url("alembic.jpg");
+    background-color: #ffffff;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 130px;
+}
+
+
+#sellerTable tr:nth-child(1) td:nth-child(2) {
+	background-image: url("newspaper.png");
+    background-color: #ffffff;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 130px;
+}
+
+#sellerTable tr:nth-child(2) td:nth-child(2) {
+	background-image: url("van.jpg");
+    background-color: #ffffff;
+    background-repeat: no-repeat;
+    background-position: center; 
+    background-size: 130px;
+}
+
+#sellerTable tr:nth-child(3) td:nth-child(2) {
+	background-image: url("tasting.jpg");
+    background-color: #ffffff;
+    background-repeat: no-repeat;
+    background-position: center; 
+    background-size: 130px;
+}
+.bignum {
+	font-size: 40px;
+	font-weight: bold;
+}
+
+.imagelabel {
+	opacity:0.8;
+	background-color: #ffffff;
+	padding: 2px;
+}
+
