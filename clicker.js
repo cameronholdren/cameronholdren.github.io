@@ -11,29 +11,29 @@ var makersDef = [
             name: 'Scuba diver',
             price: 50,
             speed: .05,
-            buy_factor: .2,
+            buy_factor: .1,
             sell_factor: .5,
             available: 0
         },
         {
             name: 'Dinghy',
-            price: 1000,
-            speed: .5,
+            price: 100,
+            speed: .2,
             buy_factor: .2,
             sell_factor: .5,
             available: 0
         },
         {
             name: 'Sailboat',
-            price: 1000,
-            speed: 3,
+            price: 1500,
+            speed: 1,
             buy_factor: .2,
             sell_factor: .5,
             available: 0
         },
         {
             name: 'Yacht',
-            price: 1000,
+            price: 12500,
             speed: 3,
             buy_factor: .2,
             sell_factor: .5,
@@ -53,15 +53,15 @@ var upgradesDef = [
         {
             name: 'Website',
             price: 1000,
-            speed: .5,
+            speed: .2,
             buy_factor: .2,
             sell_factor: .5,
             available: 1000
         },
         {
             name: 'Email List',
-            price: 10000,
-            speed: 1,
+            price: 2000,
+            speed: .2,
             buy_factor: .2,
             sell_factor: .5,
             available: 100000
@@ -179,14 +179,6 @@ function getMakersBuyPrice(idx) {
 
 function getMakersSellPrice(idx) {
     return Math.floor(makersDef[idx].sell_factor * makersDef[idx].price * Math.pow(1+makersDef[idx].buy_factor,makers[idx].count-1));
-}
-
-function getSellersBuyPrice(idx) {
-    return Math.floor(upgradesDef[idx].price * Math.pow(1+upgradesDef[idx].buy_factor,upgrades[idx].count));
-}
-
-function getSellersSellPrice(idx) {
-    return Math.floor(upgradesDef[idx].sell_factor * upgradesDef[idx].price * Math.pow(1+upgradesDef[idx].buy_factor,upgrades[idx].count-1));
 }
 
 function niceNum(value, dec) {
