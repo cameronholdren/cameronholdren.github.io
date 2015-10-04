@@ -35,7 +35,7 @@ body {
 }
 
 #sellerTable td:nth-child(1) {
-	width: 80px;
+	width: 250px;
 }
 
 #makerTable tr:nth-child(1) td:nth-child(2) {

@@ -2,8 +2,9 @@ var items = 0;
 var money = 0;
 var cost = 20;
 var makers = [];
-var sellers = [];
+var upgrades = [];
 var ticks_per_second = 10;
+var collect_base_rate = 0.05;
 
 var makersDef = [
         {
@@ -40,9 +41,9 @@ var makersDef = [
         }
     ];
 
-var sellersDef = [
+var upgradesDef = [
         {
-            name: 'Newspaper Ad',
+            name: 'Pamphlet',
             price: 100,
             speed: .1,
             buy_factor: .2,
@@ -50,7 +51,7 @@ var sellersDef = [
             available: 0
         },
         {
-            name: 'Pedovan',
+            name: 'Website',
             price: 1000,
             speed: .5,
             buy_factor: .2,
@@ -58,7 +59,7 @@ var sellersDef = [
             available: 1000
         },
         {
-            name: 'Tasting Room',
+            name: 'Email List',
             price: 10000,
             speed: 1,
             buy_factor: .2,
@@ -72,22 +73,9 @@ function init(){
     money = 0;
     all_items = 0;
     all_money = 0;
-    makers = [
-        {
-            count: 0
-        },
-        {
-            count: 0
-        }
-    ];
-    sellers = [
-        {
-            count: 0
-        },
-        {
-            count: 0
-        }
-    ];
+    makers = [];
+    upgrades = [];
+
 }
 
 init();
@@ -99,7 +87,7 @@ if (typeof savegame.money !== "undefined") money = savegame.money;
 if (typeof savegame.items !== "undefined") all_items = savegame.all_items;
 if (typeof savegame.money !== "undefined") all_money = savegame.all_money;
 if (typeof savegame.makers !== "undefined") makers = savegame.makers;
-if (typeof savegame.sellers !== "undefined") sellers = savegame.sellers;
+if (typeof savegame.upgrades !== "undefined") upgrades = savegame.upgrades;
 
 function itemMake(number){
     items = items + number;
@@ -107,17 +95,6 @@ function itemMake(number){
     setValue();
 };
 
-function itemSell(number){
-    if (items < number) {
-        number = items;
-    }
-    if (number>0) {
-        items = items - number;
-        money = money + ( number * cost);
-        all_money = all_money + ( number * cost);
-        setValue();
-    }
-};
 
 function makerBuy(idx,sell){
     var makerCost = getMakersBuyPrice(idx);
@@ -143,26 +120,17 @@ function makerBuy(idx,sell){
 
 };
 
-function sellerBuy(idx,sell){
-    var sellerCost = getSellersBuyPrice(idx);
-    if (sell) {
-        if (sellers[idx].count>0) {
-            money = money + getSellersSellPrice(idx);
-            sellers[idx].count = sellers[idx].count - 1;
-        }
+function upgradeBuy(idx,sell){
+    if (upgrades[idx] == true) {
+        return;
     }
-    else if(money >= sellerCost){
-        sellers[idx].count = sellers[idx].count + 1;
-        money = money - sellerCost;
+    if(money >= upgradesDef[idx].price){
+        upgrades[idx] = true;
+        money = money - upgradesDef[idx].price;
     };
     setValue();
-    document.getElementById('sellerCount'+idx).innerHTML = sellers[idx].count;  
-    document.getElementById('sellerCost'+idx).innerHTML = getSellersBuyPrice(idx).toLocaleString();;
-    document.getElementById('sellerSell'+idx).innerHTML = getSellersSellPrice(idx).toLocaleString();;
-    if (sellers[idx].count>0) {
-        document.getElementById('sellerSellButton'+idx).style.display = "";
-    } else {            
-        document.getElementById('sellerSellButton'+idx).style.display = "none";
+    if (upgrades[idx] == true) {
+        document.getElementById('upgradeButton'+idx).style.display = "none";
     }
 
 };
@@ -178,18 +146,27 @@ function autoMake(ticks_per_second) {
     itemMake(items_per_second/ticks_per_second);
 }
 
-function autoSell(ticks_per_second) {
+function autoCollect(ticks_per_second) {
     if (typeof ticks_per_second == "undefined") ticks_per_second = 1;
-    var items = 0;
-    for(idx = 0; idx < sellers.length; ++idx) {
-        items = items + (sellers[idx].count * sellersDef[idx].speed);
+
+    var rate = collect_base_rate;
+
+    for(idx = 0; idx < upgradesDef.length; ++idx) {
+        if (typeof upgrades[idx] !== "undefined" && upgrades[idx] == true){
+            rate = rate * (1 + upgradesDef[idx].speed);
+        }
     }
-    itemSell(items/ticks_per_second);
+
+    amount = items * rate / ticks_per_second;
+    money = money + amount;
+    all_money = all_money + amount;
+    document.getElementById('sell_per_second').innerHTML = niceNum(amount, 4);
+    setValue();
 }
 
 window.setInterval(function(){
     autoMake(ticks_per_second);
-    autoSell(ticks_per_second);
+    autoCollect(ticks_per_second);
 }, 1000/ticks_per_second);
 
 window.setInterval(function(){
@@ -205,11 +182,11 @@ function getMakersSellPrice(idx) {
 }
 
 function getSellersBuyPrice(idx) {
-    return Math.floor(sellersDef[idx].price * Math.pow(1+sellersDef[idx].buy_factor,sellers[idx].count));
+    return Math.floor(upgradesDef[idx].price * Math.pow(1+upgradesDef[idx].buy_factor,upgrades[idx].count));
 }
 
 function getSellersSellPrice(idx) {
-    return Math.floor(sellersDef[idx].sell_factor * sellersDef[idx].price * Math.pow(1+sellersDef[idx].buy_factor,sellers[idx].count-1));
+    return Math.floor(upgradesDef[idx].sell_factor * upgradesDef[idx].price * Math.pow(1+upgradesDef[idx].buy_factor,upgrades[idx].count-1));
 }
 
 function niceNum(value, dec) {
@@ -227,7 +204,7 @@ function saveGame(clear){
         all_items: all_items,
         all_money: all_money,
         makers: makers,
-        sellers: sellers
+        upgrades: upgrades
     }
 	localStorage.setItem("whale_save",JSON.stringify(save));
     if(clear) {
@@ -249,9 +226,9 @@ function setValue(){
         var row = document.getElementById('makerRow'+idx);
         if (all_items >= makersDef[idx].available) {row.style.display = "";}
     }
-    for(idx = 0; idx < sellersDef.length; ++idx) {
+    for(idx = 0; idx < upgradesDef.length; ++idx) {
         var row = document.getElementById('sellerRow'+idx);
-        if (all_money >= sellersDef[idx].available) {row.style.display = "";}
+        if (all_money >= upgradesDef[idx].available) {row.style.display = "";}
     }
 
 }
@@ -283,29 +260,23 @@ function loadDisplay(){
         document.getElementById('makerCost'+idx).innerHTML = getMakersBuyPrice(idx).toLocaleString();
         document.getElementById('makerRate'+idx).innerHTML = makersDef[idx].speed + "/sec";
     }
-    for(idx = 0; idx < sellersDef.length; ++idx) {
+    for(idx = 0; idx < upgradesDef.length; ++idx) {
         var row = sellertable.insertRow(-1);
         row.id = "sellerRow"+idx;
-        if (all_money < sellersDef[idx].available) {row.style.display = "none";}
+        if (all_money < upgradesDef[idx].available) {row.style.display = "none";}
         var cell1 = row.insertCell(0);
         var cell2 = row.insertCell(1);
-        var cell3 = row.insertCell(2);
-        cell1.innerHTML = '<span class="bignum" id="sellerCount'+idx+'">0</span><br><span class="small" id="sellerRate'+idx+'"></span>';
-        cell2.innerHTML = '<span class="imagelabel" id="sellerLabel'+idx+'"></span>';
-        cell3.innerHTML = '<button onclick="sellerBuy('+idx+')">Buy for $<span id="sellerCost'+idx+'">0</span></button><br><button id="sellerSellButton'+idx+'" class="small" onclick="sellerBuy('+idx+',true)">Sell for $<span id="sellerSell'+idx+'">0</span></button>';
-        if (typeof sellers[idx] == "undefined"){
-            sellers[idx] = {count: 0};
+        cell1.innerHTML = '<span class="imagelabel" id="upgradeLabel'+idx+'"></span><br>Increase donations by <span id="upgradeRate'+idx+'"></span>';
+        cell2.innerHTML = '<button id="upgradeButton'+idx+'" onclick="upgradeBuy('+idx+')">Buy for $<span id="upgradeCost'+idx+'">0</span></button>';
+        if (typeof upgrades[idx] == "undefined"){
+            upgrades[idx] = false;
         }
-        if (sellers[idx].count>0) {
-            document.getElementById('sellerSellButton'+idx).style.display = "";
-        } else {            
-            document.getElementById('sellerSellButton'+idx).style.display = "none";
+        if (upgrades[idx] == true) {
+            document.getElementById('upgradeButton'+idx).style.display = "none";
         }
-        document.getElementById('sellerLabel'+idx).innerHTML = sellersDef[idx].name;
-        document.getElementById('sellerSell'+idx).innerHTML = getSellersSellPrice(idx).toLocaleString();
-        document.getElementById('sellerCount'+idx).innerHTML = sellers[idx].count;
-        document.getElementById('sellerCost'+idx).innerHTML = getSellersBuyPrice(idx).toLocaleString();
-        document.getElementById('sellerRate'+idx).innerHTML = sellersDef[idx].speed + "/sec";
+        document.getElementById('upgradeLabel'+idx).innerHTML = upgradesDef[idx].name;
+        document.getElementById('upgradeCost'+idx).innerHTML = upgradesDef[idx].price.toLocaleString();
+        document.getElementById('upgradeRate'+idx).innerHTML = (upgradesDef[idx].speed * 100) + "%";
     }
     setValue();
 }
