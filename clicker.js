@@ -7,7 +7,7 @@ var ticks_per_second = 10;
 
 var makersDef = [
         {
-            name: 'Bathtub',
+            name: 'Scuba diver',
             price: 50,
             speed: .05,
             buy_factor: .2,
@@ -15,7 +15,7 @@ var makersDef = [
             available: 0
         },
         {
-            name: 'Kiddie Pool',
+            name: 'Dinghy',
             price: 1000,
             speed: .5,
             buy_factor: .2,
@@ -23,7 +23,7 @@ var makersDef = [
             available: 0
         },
         {
-            name: 'Backyard Pool',
+            name: 'Sailboat',
             price: 1000,
             speed: 3,
             buy_factor: .2,
@@ -31,7 +31,7 @@ var makersDef = [
             available: 0
         },
         {
-            name: 'Olympic Pool',
+            name: 'Yacht',
             price: 1000,
             speed: 3,
             buy_factor: .2,
